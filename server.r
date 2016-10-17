@@ -65,47 +65,58 @@ function(input, output) {
                "Fecal" =   fecalpanel(),
                )
     })
-    
-    observe(if (is.null(input$sample)){
-                return()
-            } else if(input$sample == 'Urine24') {
-                factorLevels <- c('UI','UIII', 'Hepta', 'Hexa', 'Penta','CI', 'CIII')
-                intervals <- urineRI.24
-                units <- 'nmol/d'
-                print(units)
-            }else if(input$sample == 'UrineR') {
-                factorLevels <- c('UI','UIII', 'Hepta', 'Hexa', 'Penta','CI', 'CIII')
-                intervals <- urineRI.R
-                units <- 'umol/mol creat'
-                print(units)
-            }else if(input$sample == 'Fecal') {
-                factorLevels <- c('UI','UIII', 'Hepta', 'Hexa', 'Penta', 'CI', 'CIII','Deutero', 'Meso', 'Proto')
-                intervals <- stoolRI
-                units <- 'nmol/g dry wt'
-                print(units)
-            })
 
-    data <- eventReactive(input$submit, {
+    intervals <- eventReactive(input$sample,{
+        if(input$sample == 'Urine24') {
+            urineRI.24
+        }else if(input$sample == 'UrineR') {
+            urineRI.R
+        }else if(input$sample == 'Fecal') {
+            stoolRI
+        }
+    })
+
+    factorLevels <- eventReactive(input$sample,{
+        if(input$sample == 'Urine24') {
+            c('UI','UIII', 'Hepta', 'Hexa', 'Penta','CI', 'CIII')
+        }else if(input$sample == 'UrineR') {
+            c('UI','UIII', 'Hepta', 'Hexa', 'Penta','CI', 'CIII')
+        }else if(input$sample == 'Fecal') {
+            c('UI','UIII', 'Hepta', 'Hexa', 'Penta', 'CI', 'CIII','Deutero', 'Meso', 'Proto')}
+    })
+
+    units <- eventReactive(input$sample,{
+        if(input$sample == 'Urine24') {
+            'nmol/d'
+        }else if(input$sample == 'UrineR') {
+            'umol/mol creat'
+        }else if(input$sample == 'Fecal') {
+            'nmol/g dry wt'}
+    })
+
+    results <- eventReactive(input$submit, {
         if (is.null(input$sample))
             return()
-        results <- switch(input$sample,
-                          "Urine24" =  c(input$uroI,input$uroIII,input$hepta,input$hexa,input$penta, input$coproI, input$coproIII),
-                          "UrineR" =  c(input$uroI,input$uroIII,input$hepta,input$hexa,input$penta, input$copI, input$coproIII),
-                          "Fecal" =  c(input$uroI,input$uroIII,input$hepta,input$hexa,input$penta, input$coproI, input$coproIII, input$deutro, input$meso, input$proto))
-        Formating(results, intervals,factorLevels)
-    })
+        switch(input$sample,
+               "Urine24" =  c(input$uroI,input$uroIII,input$hepta,input$hexa,input$penta, input$coproI, input$coproIII),
+               "UrineR" =  c(input$uroI,input$uroIII,input$hepta,input$hexa,input$penta, input$coproI, input$coproIII),
+               "Fecal" =  c(input$uroI,input$uroIII,input$hepta,input$hexa,input$penta, input$coproI, input$coproIII, input$deutero, input$meso, input$proto))
+            })
   
-      
+    data <- eventReactive(input$submit, {
+        print(intervals())
+        print(factorLevels())
+        print(results())
+        Formating(results(), intervals(), factorLevels())
+    })
+
     output$conc <- renderPlot({
-        RIPlot(data(),input$sample, units)
+        RIPlot(data(),input$sample, units())
     })
 
     output$percent <- renderPlot({
         PropPlot(Proportion(data()),input$sample)
     })
-
-
-
 }
 
 ## temp <- Formating(results, intervals,factorLevels)

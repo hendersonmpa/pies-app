@@ -4,16 +4,16 @@ library(dplyr)
 
 ### Data Wrangling
 Formating <- function(results, intervals,factorLevels){
-  intervals.melt <- melt(intervals, id = c('porphyrin', 'level'),
-                         variable.name='type')
-  intervals.cast <- dcast(intervals.melt, porphyrin + type ~ level)
-  intervals.cast$porphyrin <- ordered(intervals.cast$porphyrin, levels = factorLevels) # ordered factor
+    intervals.melt <- melt(intervals, id = c('porphyrin', 'level'),
+                           variable.name='type')
+    intervals.cast <- dcast(intervals.melt, porphyrin + type ~ level)
+    intervals.cast$porphyrin <- ordered(intervals.cast$porphyrin, levels = factorLevels) # ordered factor
 
-  patient <- data.frame(
-               porphyrin = levels(intervals.cast$porphyrin),
-               type = rep('Patient',length(factorLevels)),
-               high = results,
-               low = results)
+    patient <- data.frame(
+        porphyrin = levels(intervals.cast$porphyrin),
+        type = rep('Patient',length(factorLevels)),
+        high = results,
+        low = results)
 
   intervalsWPatient <- rbind(intervals.cast,patient)
   return(intervalsWPatient)
@@ -36,7 +36,7 @@ Proportion <- function(intervalsWPatient){
 }
 
 RIPlot <- function(intervalsWPatient, sample, units){
-    titleRI <- paste('Reference Intervals for', method,
+    titleRI <- paste('Reference Intervals for', sample,
                      'Porphyrins', sep=' ')
     RI <- ggplot(intervalsWPatient, aes(x=porphyrin, colour=porphyrin)) +
         geom_errorbar(aes(ymin=low, ymax=high) ,position='dodge', size=2) +
