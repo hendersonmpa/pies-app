@@ -67,31 +67,30 @@ function(input, output) {
     })
 
     intervals <- eventReactive(input$sample,{
-        if(input$sample == 'Urine24') {
-            urineRI.24
-        }else if(input$sample == 'UrineR') {
-            urineRI.R
-        }else if(input$sample == 'Fecal') {
-            stoolRI
-        }
+          if(is.null(input$sample))
+            return()
+          switch(input$sample,
+                 'Urine24'= urineRI.24,
+                 'UrineR'= urineRI.R,
+                 'Fecal'= stoolRI)
     })
 
     factorLevels <- eventReactive(input$sample,{
-        if(input$sample == 'Urine24') {
-            c('UI','UIII', 'Hepta', 'Hexa', 'Penta','CI', 'CIII')
-        }else if(input$sample == 'UrineR') {
-            c('UI','UIII', 'Hepta', 'Hexa', 'Penta','CI', 'CIII')
-        }else if(input$sample == 'Fecal') {
-            c('UI','UIII', 'Hepta', 'Hexa', 'Penta', 'CI', 'CIII','Deutero', 'Meso', 'Proto')}
+        if (is.null(input$sample))
+            return()
+        switch(input$sample,
+               'Urine24' = c('UI','UIII', 'Hepta', 'Hexa', 'Penta','CI', 'CIII'),
+               'UrineR' = c('UI','UIII', 'Hepta', 'Hexa', 'Penta','CI', 'CIII'),
+               'Fecal' = c('UI','UIII', 'Hepta', 'Hexa', 'Penta', 'CI', 'CIII','Deutero', 'Meso', 'Proto'))
     })
 
     units <- eventReactive(input$sample,{
-        if(input$sample == 'Urine24') {
-            'nmol/d'
-        }else if(input$sample == 'UrineR') {
-            'umol/mol creat'
-        }else if(input$sample == 'Fecal') {
-            'nmol/g dry wt'}
+        if (is.null(input$sample))
+            return()
+        switch(input$sample,
+               'Urine24'= 'nmol/d',
+               'UrineR' = 'umol/mol creat',
+               'Fecal'='nmol/g dry wt')
     })
 
     results <- eventReactive(input$submit, {
@@ -104,9 +103,9 @@ function(input, output) {
             })
   
     data <- eventReactive(input$submit, {
-        print(intervals())
-        print(factorLevels())
-        print(results())
+        ## print(intervals())
+        ## print(factorLevels())
+        ## print(results())
         Formating(results(), intervals(), factorLevels())
     })
 
@@ -118,8 +117,3 @@ function(input, output) {
         PropPlot(Proportion(data()),input$sample)
     })
 }
-
-## temp <- Formating(results, intervals,factorLevels)
-## temp2 <- Proportion(temp)
-
-
