@@ -1,5 +1,8 @@
-library(shiny)
-library(shinythemes)
+library("shiny")
+library("shinythemes")
+source("comments.r")
+
+
 
 # Define UI for miles per gallon application
 fluidPage(
@@ -34,11 +37,8 @@ fluidPage(
                      h3("Proportion Plot"),
                      plotOutput("percent")
                      ),
-            tabPanel("Comments",
-                     h3("Expandable Text")
-                     # verbatimTextOutput("results")
-                     # verbatimTextOutput("xsummary")
-                     ))),
+            comments()
+        )),
     fluidRow(
         column(width = 4, offset =10,
                "Made by Matthew Henderson"

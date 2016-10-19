@@ -78,3 +78,5 @@ output_percent <- function(data){
 ## temp2 <- Proportion(temp)
 ## RIPlot(temp,method, units)
 ## PropPlot(temp2,method)
+
+
