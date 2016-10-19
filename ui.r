@@ -41,6 +41,7 @@ fluidPage(
         )),
     fluidRow(
         column(width = 4, offset =10,
-               "Made by Matthew Henderson"
+               p("Made by Matthew P.A. Henderson, PhD, FCACB")
+               p("email: mhenderson at cheo dot on dot ca")
                ))
 )
